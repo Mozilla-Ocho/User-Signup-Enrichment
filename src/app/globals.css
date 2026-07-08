@@ -1,0 +1,253 @@
+@import "tailwindcss";
+
+/* Mozilla brand fonts (shared with the Tabstack family). */
+@font-face {
+  font-family: "Mozilla Headline";
+  src: url("/fonts/MozillaHeadline-Variable.woff2") format("woff2-variations");
+  font-weight: 200 700;
+  font-stretch: 75% 100%;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Mozilla Text";
+  src: url("/fonts/MozillaText-Variable.woff2") format("woff2-variations");
+  font-weight: 200 700;
+  font-display: swap;
+}
+
+:root {
+  /* Ink + surface (Tabstack DNA: near-black on near-white, flat, light-only) */
+  --ink: #10100f;
+  --ink-80: rgba(16, 16, 15, 0.8);
+  --ink-70: rgba(16, 16, 15, 0.7);
+  --ink-08: rgba(16, 16, 15, 0.08);
+  --surface: #ffffff;
+  --surface-muted: #f6f5f4;
+  --hairline: #e4e2df;
+  --muted: #63606b; /* ≥4.5:1 on white (AA for small text) */
+  --danger: #b42318; /* hard errors — paired with text + icon, never color-only */
+
+  /* The spin: one saturated accent — violet, not Tabstack's pink. */
+  --accent: #b8a6ff; /* soft pill bg, ink text (mirrors pink's role) */
+  --accent-strong: #6d28d9; /* links, eyebrow accent, small marks */
+  --accent-soft: rgba(124, 58, 237, 0.12); /* marker highlight / notice bg */
+  --accent-ring: rgba(124, 58, 237, 0.3);
+
+  --font-display: "Mozilla Headline", ui-sans-serif, system-ui, sans-serif;
+  --font-text: "Mozilla Text", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 12px;
+  --radius-card-lg: 18px;
+  --duration: 200ms;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@theme inline {
+  --color-background: var(--surface);
+  --color-foreground: var(--ink);
+  --color-ink: var(--ink);
+  --color-ink-80: var(--ink-80);
+  --color-ink-70: var(--ink-70);
+  --color-ink-08: var(--ink-08);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-hairline: var(--hairline);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-danger: var(--danger);
+
+  --font-display: var(--font-display);
+  --font-text: var(--font-text);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+body {
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- Type devices ---- */
+
+/* Condensed Mozilla Headline display. Bigger = tighter (negative tracking). */
+.display {
+  font-family: var(--font-display);
+  font-variation-settings: "wght" 495, "wdth" 78;
+  letter-spacing: -0.03em;
+  line-height: 0.98;
+}
+.display-light {
+  font-variation-settings: "wght" 460, "wdth" 78;
+}
+
+/* Uppercase mono eyebrow — the repeating Tabstack section label device. */
+.eyebrow {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  font-weight: 500;
+  color: var(--muted);
+}
+.eyebrow-accent {
+  color: var(--accent-strong);
+}
+
+/* The spin: flat accent marker-highlight behind a word. */
+.marker {
+  background: var(--accent-soft);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0 0.12em;
+  border-radius: 2px;
+}
+
+/* ---- Buttons (pills, flat) ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem; /* 44px tap target */
+  border-radius: 9999px;
+  font-weight: 600;
+  transition:
+    background-color var(--duration) var(--ease),
+    color var(--duration) var(--ease),
+    border-color var(--duration) var(--ease),
+    transform var(--duration) var(--ease);
+}
+
+/* Visible keyboard focus on interactive elements (ink ring reads on both
+   white and violet surfaces). */
+:where(a, button, select, [role="button"], [tabindex]):focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.btn-primary {
+  background: var(--accent);
+  color: var(--ink);
+}
+.btn-primary:hover {
+  filter: brightness(0.96);
+  transform: translateY(-1px);
+}
+.btn-ink {
+  background: var(--ink);
+  color: #fff;
+}
+.btn-ink:hover {
+  background: #000;
+  transform: translateY(-1px);
+}
+.btn-secondary {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--hairline);
+}
+.btn-secondary:hover {
+  background: var(--surface-muted);
+  transform: translateY(-1px);
+}
+
+/* ---- Surfaces ---- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-card);
+}
+.card-featured {
+  border-color: var(--ink);
+}
+
+/* ---- Chips / notice ---- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 9999px;
+  padding: 0.15rem 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.chip-soft {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+.chip-solid {
+  background: var(--accent);
+  color: var(--ink);
+}
+
+/* ---- Inputs ---- */
+.field {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  color: var(--ink);
+  transition:
+    border-color var(--duration) var(--ease),
+    box-shadow var(--duration) var(--ease);
+}
+.field::placeholder {
+  color: var(--muted);
+}
+.field:focus {
+  outline: none;
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px var(--accent-ring);
+}
+
+/* ---- Slash endpoint row (Tabstack signature, reused for profiles) ---- */
+.slug {
+  font-family: var(--font-text);
+  font-variation-settings: "wght" 620;
+  letter-spacing: -0.01em;
+}
+
+/* ---- Motion ---- */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-up {
+  animation: fade-up 0.5s var(--ease) both;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, var(--accent-soft), transparent);
+  animation: shimmer 1.6s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .shimmer::after {
+    animation: none;
+  }
+}
