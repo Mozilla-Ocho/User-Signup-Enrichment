@@ -16,8 +16,17 @@ import { classifyProfile } from "./enrichment/classify";
 import { appProfileKey, getProfile } from "./enrichment/registry";
 import { gravatarAvatarUrl, gravatarProfileUrl } from "./gravatar";
 
-// Reads TABSTACK_API_KEY from the environment automatically.
-const client = new Tabstack();
+// Lazily instantiated so importing this module (e.g. during `next build`'s
+// page-data collection) doesn't require TABSTACK_API_KEY to be set — it's
+// only needed once a request actually calls into Tabstack.
+let client: Tabstack | undefined;
+function getClient(): Tabstack {
+  if (!client) {
+    // Reads TABSTACK_API_KEY from the environment automatically.
+    client = new Tabstack();
+  }
+  return client;
+}
 
 const nowIso = () => new Date().toISOString();
 
@@ -26,7 +35,7 @@ async function extractFacts(
   url: string,
   profile: EnrichmentProfile,
 ): Promise<{ facts: CompanyFacts; extra: Record<string, unknown> }> {
-  const result = (await client.extract.json({
+  const result = (await getClient().extract.json({
     url,
     json_schema: buildFactsSchema(profile.extraFacts, profile.baseFields),
     effort: "standard",
@@ -43,7 +52,7 @@ async function extractFacts(
 // so it can run in parallel with the facts extract without adding latency.
 async function fetchBranding(url: string): Promise<Branding> {
   try {
-    const res = await client.extract.markdown({
+    const res = await getClient().extract.markdown({
       url,
       metadata: true,
       effort: "min",
@@ -84,7 +93,7 @@ async function fillGaps(
   for (const k of missingExtra) extraSubset[k] = profile.extraFacts![k];
 
   try {
-    const gen = (await client.generate.json({
+    const gen = (await getClient().generate.json({
       url,
       json_schema: buildFactsSchema(extraSubset, missingBase),
       instructions:
@@ -124,7 +133,7 @@ async function researchCompany(
   mode: "fast" | "balanced",
   gravatarUrl: string | null,
 ): Promise<{ summary: string; sources: Source[] }> {
-  const stream = await client.agent.research({
+  const stream = await getClient().agent.research({
     query: profile.researchQuery({ url, companyName: name, gravatarUrl }),
     mode,
     // Cap per-page fetches so one slow source can't stall the whole summary.
@@ -160,7 +169,7 @@ export async function enrichFast(
   const profileKey =
     opts?.profileKey ??
     appProfileKey() ??
-    (await classifyProfile(client, companyUrl));
+    (await classifyProfile(getClient(), companyUrl));
   const profile = getProfile(profileKey);
 
   const [{ facts, extra }, branding] = await Promise.all([

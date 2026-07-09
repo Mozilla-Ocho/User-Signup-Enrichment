@@ -7,6 +7,23 @@ short cited summary from that URL; the result is stored in Turso. The onboarding
 form then shows up **prefilled** instead of blank, and the user corrects
 anything wrong.
 
+## Agent-first: `stripe projects build`
+
+```bash
+stripe projects build --template-manifest registry.yaml
+```
+
+Provisions Clerk, Turso, and Tabstack, and writes their credentials to `.env`.
+
+Two manual Clerk dashboard steps are still required after provisioning:
+
+1. **Disable the password requirement.** Run `stripe projects open clerk` for a dashboard link to the app that was just provisioned. Under **User & authentication**, turn **Password** off and enable **Email verification code**. Without this, sign-up fails with "Verification incomplete."
+2. **Register the webhook.** Same dashboard, **Webhooks** page → add an endpoint at `https://<your-host>/api/webhooks/clerk`, subscribe to `user.created`, copy the signing secret into `CLERK_WEBHOOK_SIGNING_SECRET`. For local dev, tunnel first (`ngrok http <port>`) and point the webhook at the tunnel URL — Clerk's servers can't reach `localhost` directly.
+
+```bash
+pnpm dev
+```
+
 ## Stack
 
 - Next.js (App Router) + TypeScript + Tailwind CSS v4

@@ -1,3 +1,7 @@
+// Must run before @clerk/nextjs/server: it caches process.env.CLERK_SECRET_KEY
+// into a module-level constant on first import, so this side effect has to
+// land first or the cached key is empty.
+import "@/lib/clerk-config";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
@@ -33,8 +37,8 @@ export default async function OnboardingPage() {
           {companyUrl ? (
             <>
               We researched{" "}
-              <span className="font-medium text-ink">{companyUrl}</span> for you.
-              Fix anything that&apos;s wrong.
+              <span className="font-medium text-ink">{companyUrl}</span>{" "}
+              for you. Fix anything that&apos;s wrong.
             </>
           ) : (
             "Fill in your details below."
