@@ -1,3 +1,4 @@
+import "@/lib/clerk-config";
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
 const isProtectedRoute = createRouteMatcher(["/onboarding(.*)"]);

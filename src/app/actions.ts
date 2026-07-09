@@ -1,5 +1,9 @@
 "use server";
 
+// Must run before @clerk/nextjs/server: it caches process.env.CLERK_SECRET_KEY
+// into a module-level constant on first import, so this side effect has to
+// land first or the cached key is empty.
+import "@/lib/clerk-config";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import type { CompanyProfile } from "@/lib/enrichment";
 import { saveUserProfile } from "@/lib/db";

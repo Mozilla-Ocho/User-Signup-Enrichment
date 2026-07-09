@@ -1,4 +1,8 @@
 import { after, type NextRequest } from "next/server";
+// Must run before @clerk/nextjs/webhooks: it transitively caches
+// process.env.CLERK_SECRET_KEY into a module-level constant on first import,
+// so this side effect has to land first or the cached key is empty.
+import "@/lib/clerk-config";
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import { enrichFast, enrichSummary } from "@/lib/tabstack";
 import {
