@@ -183,3 +183,10 @@ cross-user cache. Natural next steps from here:
   `user_profiles` row to highlight what changed since they last confirmed.
 - **Cache warming / analytics**: query `enrichment_runs` for profile mix,
   failure rate, and time-to-ready; pre-warm `company_cache` for known domains.
+
+## Feedback
+
+Report a problem or request a feature in
+[tabstack-feedback](https://github.com/Mozilla-Ocho/tabstack-feedback/issues/new/choose).
+Include the commit you are running and the error message you saw. Never paste
+API keys or personal data into an issue.
